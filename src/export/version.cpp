@@ -27,7 +27,7 @@ namespace lsp
 {
     namespace r3d
     {
-        namespace glx
+        namespace wgl
         {
             // Version function
             LSP_R3D_WGL_LIB_CEXPORT
@@ -36,6 +36,6 @@ namespace lsp
             // Specify the version of the R3D interface in use
             LSP_R3D_WGL_LIB_CEXPORT
             LSP_R3D_IFACE_DEF_VERSION_FUNC
-        }
-    }
-}
+        } /* namespace wgl */
+    } /* namespace r3d */
+} /* namespace lsp */

@@ -32,6 +32,6 @@ namespace lsp
             // Function that returns factory
             LSP_R3D_WGL_LIB_CEXPORT
             LSP_R3D_BULTIN_FACTORY_FUNCTION
-        }
-    }
-}
+        } /* namespace wgl */
+    } /* namespace r3d */
+} /* namespace lsp */

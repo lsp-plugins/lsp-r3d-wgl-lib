@@ -19,8 +19,8 @@
  * along with lsp-r3d-wgl-lib. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef PRIVATE_GLX_BACKEND_H_
-#define PRIVATE_GLX_BACKEND_H_
+#ifndef LSP_PLUG_IN_R3D_WGL_BACKEND_H_
+#define LSP_PLUG_IN_R3D_WGL_BACKEND_H_
 
 #include <lsp-plug.in/r3d/wgl/version.h>
 
@@ -57,4 +57,4 @@ namespace lsp
 } /* namespace lsp */
 
 
-#endif /* PRIVATE_GLX_BACKEND_H_ */
+#endif /* LSP_PLUG_IN_R3D_WGL_BACKEND_H_ */

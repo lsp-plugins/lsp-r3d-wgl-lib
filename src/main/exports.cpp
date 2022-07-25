@@ -29,7 +29,7 @@ namespace lsp
     {
         namespace wgl
         {
-            factory_t   factory;
+            static factory_t   factory;
 
             // Builtin factory binding
             LSP_R3D_BUILTIN_FACTORY(builtin_wgl_factory, &lsp::r3d::wgl::factory);

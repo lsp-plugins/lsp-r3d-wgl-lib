@@ -26,6 +26,9 @@
 
 #include <lsp-plug.in/r3d/base/backend.h>
 
+#include <gl/gl.h>
+#include <windows.h>
+
 namespace lsp
 {
     namespace r3d
@@ -34,6 +37,11 @@ namespace lsp
         {
             typedef struct backend_t: public r3d::base_backend_t
             {
+                WCHAR              *pWndClass;
+                HWND                hWindow;
+                HDC                 hDC;
+                HGLRC               hGL;
+
                 void                construct();
                 explicit            backend_t();
 

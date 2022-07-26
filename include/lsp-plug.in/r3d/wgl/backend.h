@@ -35,12 +35,21 @@ namespace lsp
     {
         namespace wgl
         {
+            typedef struct vertex_t
+            {
+                dot4_t          v;      // Vertex
+                vec4_t          n;      // Normal
+                color_t         c;      // Color
+            } vertex_t;
+
             typedef struct backend_t: public r3d::base_backend_t
             {
-                WCHAR              *pWndClass;
-                HWND                hWindow;
-                HDC                 hDC;
-                HGLRC               hGL;
+                WCHAR              *pWndClass;      // Window class
+                HWND                hWindow;        // Window instance
+                HDC                 hDC;            // Device context instance
+                HGLRC               hGL;            // OpenGL context instance
+                bool                bDrawing;       // Flag: backend is in drawing mode
+                vertex_t           *vxBuffer;       // Temporary vertex buffer
 
                 void                construct();
                 explicit            backend_t();

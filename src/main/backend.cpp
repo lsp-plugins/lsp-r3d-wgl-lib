@@ -184,7 +184,7 @@ namespace lsp
                 if (_this->pWndClass != NULL)
                 {
                     UnregisterClassW(_this->pWndClass, GetModuleHandleW(NULL));
-                    //free(_this->pWndClass); // SIGTRAP from windows internals
+                    free(_this->pWndClass);
                     _this->pWndClass    = NULL;
                 }
 
@@ -203,7 +203,7 @@ namespace lsp
                     // Generate class name of the window
                     WCHAR class_name[80];
                     swprintf_s(class_name, sizeof(class_name), L"lsp-wgl-%p", _this);
-                    if ((_this->pWndClass = StrDupW(class_name)) == NULL)
+                    if ((_this->pWndClass = _wcsdup(class_name)) == NULL)
                         return STATUS_NO_MEM;
 
                     // Register window class name

@@ -29,13 +29,16 @@ namespace lsp
     {
         namespace wgl
         {
-            // Version function
-            LSP_R3D_WGL_LIB_CEXPORT
-            LSP_DEFINE_VERSION_FUNC(LSP_R3D_WGL_LIB)
+            extern "C"
+            {
+                // Version function
+                LSP_R3D_WGL_LIB_PUBLIC
+                LSP_DEFINE_VERSION_FUNC(LSP_R3D_WGL_LIB)
 
-            // Specify the version of the R3D interface in use
-            LSP_R3D_WGL_LIB_CEXPORT
-            LSP_R3D_IFACE_DEF_VERSION_FUNC
+                // Specify the version of the R3D interface in use
+                LSP_R3D_WGL_LIB_PUBLIC
+                LSP_R3D_IFACE_DEF_VERSION_FUNC
+            }
         } /* namespace wgl */
     } /* namespace r3d */
 } /* namespace lsp */

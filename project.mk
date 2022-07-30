@@ -24,5 +24,4 @@ ARTIFACT_NAME               = lsp-r3d-wgl-lib
 ARTIFACT_DESC               = Windows-based OpenGL 3D backend library for rendering scenes
 ARTIFACT_HEADERS            = lsp-plug.in
 ARTIFACT_VERSION            = 1.0.0-devel
-ARTIFACT_EXPORT_SYMBOLS     = 0
 ARTIFACT_EXPORT_HEADERS     = 0

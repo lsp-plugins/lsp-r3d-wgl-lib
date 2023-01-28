@@ -11,4 +11,5 @@
 **/*.gmon
 *.core
 /.config.mk
+/modules/
 /DebugWin/

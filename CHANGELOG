@@ -2,6 +2,9 @@
 * RECENT CHANGES
 *******************************************************************************
 
+=== 1.0.4 ===
+
+
 === 1.0.3 ===
 * Added Clang build for the CI.
 * Updated project tree.

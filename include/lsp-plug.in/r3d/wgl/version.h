@@ -24,7 +24,7 @@
 
 #define LSP_R3D_WGL_LIB_MAJOR           1
 #define LSP_R3D_WGL_LIB_MINOR           0
-#define LSP_R3D_WGL_LIB_MICRO           5
+#define LSP_R3D_WGL_LIB_MICRO           6
 
 #if defined(LSP_R3D_WGL_LIB_PUBLISHER)
     #define LSP_R3D_WGL_LIB_PUBLIC          LSP_EXPORT_MODIFIER

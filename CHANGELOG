@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 1.0.7 ===
-
+* Updated build scripts.
 
 === 1.0.6 ===
 * Removed Makefile.d. Dependencies are now automatically generated at the build stage.

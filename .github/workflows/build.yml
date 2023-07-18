@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Configure project
         shell: msys2 {0}
-        run: make config TEST=1
+        run: make config TEST=1 STRICT=1
       - name: Fetch project dependencies
         shell: msys2 {0}
         run: make fetch

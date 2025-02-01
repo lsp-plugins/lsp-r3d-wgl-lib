@@ -1,6 +1,6 @@
 #
-# Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
-#           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+# Copyright (C) 2025 Linux Studio Plugins Project <https://lsp-plug.in/>
+#           (C) 2025 Vladimir Sadovnikov <sadko4u@gmail.com>
 #
 # This file is part of lsp-r3d-wgl-lib
 #
@@ -57,7 +57,7 @@ LIBGDI32_TYPE              := opt
 LIBGDI32_LDFLAGS           := -lgdi32
 
 LIBOPENGL32_VERSION        := system
-LIBOPENGL32_NAME           := opengl32
+LIBOPENGL32_NAME           := libopengl32
 LIBOPENGL32_TYPE           := opt
 LIBOPENGL32_LDFLAGS        := -lopengl32
 

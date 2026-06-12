@@ -5,6 +5,12 @@ Windows-based OpenGL 3D backend library for rendering scenes.
 It provides:
 * 3D rendering backend that uses OpenGL 2.0 library and extensions.
 
+## Supported platforms
+
+The build and correct unit test execution has been confirmed for following platforms:
+* Windows 32-bit
+* Windows 64-bit
+
 Requirements
 ======
 

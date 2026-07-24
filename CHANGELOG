@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 1.0.25 ===
-
+* Updated build scripts.
 
 === 1.0.24 ===
 * Updated build system: ASAN, CROSS_COMPILE, DEBUG, DEVEL, PROFILE, STRICT,

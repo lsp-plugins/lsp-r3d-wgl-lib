@@ -3,7 +3,7 @@
 *******************************************************************************
 
 === 1.0.27 ===
-
+* Fixed 3D rendering from a separate DLL library.
 
 === 1.0.26 ===
 * Updated build scripts.

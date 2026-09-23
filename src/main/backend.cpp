@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2020 Linux Studio Plugins Project <https://lsp-plug.in/>
- *           (C) 2020 Vladimir Sadovnikov <sadko4u@gmail.com>
+ * Copyright (C) 2026 Linux Studio Plugins Project <https://lsp-plug.in/>
+ *           (C) 2026 Vladimir Sadovnikov <sadko4u@gmail.com>
  *
  * This file is part of lsp-r3d-wgl-lib
  * Created on: 24 апр. 2019 г.
@@ -100,6 +100,17 @@ namespace lsp
             };
         #undef PFD
 
+            static HMODULE get_module_handle()
+            {
+                HMODULE hDllModule = NULL;
+                GetModuleHandleExW(
+                    GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                    (LPCWSTR)get_module_handle,
+                    &hDllModule
+                );
+                return hDllModule;
+            }
+
             backend_t::backend_t()
             {
                 construct();
@@ -109,12 +120,26 @@ namespace lsp
             {
                 switch (uMsg)
                 {
+                    case WM_ERASEBKGND:
+                    {
+                        return 1; // Deny to reset background.
+                    }
+                    case WM_PAINT:
+                    {
+                        // Telling window surface is valid
+                        PAINTSTRUCT ps;
+                        BeginPaint(hwnd, &ps);
+                        EndPaint(hwnd, &ps);
+                        return 0;
+                    }
                     case WM_CREATE:
+                    {
                         CREATESTRUCTW *create = reinterpret_cast<CREATESTRUCTW *>(lParam);
                         backend_t *wnd = reinterpret_cast<backend_t *>(create->lpCreateParams);
                         if (wnd != NULL)
                             SetWindowLongPtrW(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(wnd));
                         return DefWindowProc(hwnd, uMsg, wParam, lParam);
+                    }
                 }
 
                 return DefWindowProcW(hwnd, uMsg, wParam, lParam);
@@ -146,6 +171,8 @@ namespace lsp
                 R3D_WGL_BACKEND_EXP(set_matrix);
                 R3D_WGL_BACKEND_EXP(set_lights);
                 R3D_WGL_BACKEND_EXP(draw_primitives);
+
+                debug::redirect("r3d-wgl.log");
 
                 #undef R3D_GLX_BACKEND_EXP
             }
@@ -183,7 +210,7 @@ namespace lsp
                 }
                 if (_this->pWndClass != NULL)
                 {
-                    UnregisterClassW(_this->pWndClass, GetModuleHandleW(NULL));
+                    UnregisterClassW(_this->pWndClass, get_module_handle());
                     free(_this->pWndClass);
                     _this->pWndClass    = NULL;
                 }
@@ -210,9 +237,9 @@ namespace lsp
                     WNDCLASSW wc;
                     ZeroMemory(&wc, sizeof(wc));
 
-                    wc.style         = CS_HREDRAW | CS_VREDRAW;
+                    wc.style         = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
                     wc.lpfnWndProc   = window_proc;
-                    wc.hInstance     = GetModuleHandleW(NULL);
+                    wc.hInstance     = get_module_handle();
                     wc.lpszClassName = _this->pWndClass;
 
                     if (!RegisterClassW(&wc))
@@ -231,7 +258,7 @@ namespace lsp
                     1,                                  // nHeight
                     NULL,                               // hWndParent
                     NULL,                               // hMenu
-                    GetModuleHandleW(NULL),             // hInstance
+                    get_module_handle(),                // hInstance
                     _this);                             // lpCreateParam
                 if (_this->hWindow == NULL)
                     return STATUS_UNKNOWN_ERR;
@@ -271,7 +298,7 @@ namespace lsp
                     return STATUS_UNKNOWN_ERR;
                 }
 
-//                ShowWindow(_this->hWindow, SW_SHOWNORMAL);
+                ShowWindow(_this->hWindow, SW_SHOWNORMAL);
 
                 return STATUS_OK;
             }
@@ -309,6 +336,9 @@ namespace lsp
                     height*2 - (rect.bottom - rect.top),
                     FALSE);
 
+                lsp_trace("locate: left=%d, top=%d, width=%d, height=%d",
+                    int(left), int(top), int(width), int(height));
+
                 // Update parameters
                 _this->viewLeft    = left;
                 _this->viewTop     = top;
@@ -325,13 +355,20 @@ namespace lsp
                     return STATUS_BAD_STATE;
 
                 // Set active context
-                ::wglMakeCurrent(_this->hDC, _this->hGL);
+                if (!::wglMakeCurrent(_this->hDC, _this->hGL))
+                    lsp_error("wglMakeCurrent error");
+                else
+                    lsp_info("wglMakeCurrent OK");
+
+                lsp_trace("glViewport: left=%d, top=%d, width=%d, height=%d",
+                        int(0), int(0), int(_this->viewWidth), int(_this->viewHeight));
+
                 ::glViewport(0, 0, _this->viewWidth, _this->viewHeight);
                 ::glDrawBuffer(GL_BACK);
 
                 // Enable depth test and culling
                 ::glDepthFunc(GL_LEQUAL);
-                ::glEnable(GL_DEPTH_TEST);
+//                ::glEnable(GL_DEPTH_TEST);
                 ::glEnable(GL_CULL_FACE);
                 ::glCullFace(GL_BACK);
                 ::glEnable(GL_COLOR_MATERIAL);
@@ -341,15 +378,26 @@ namespace lsp
                 ::glEnable(GL_RESCALE_NORMAL);
 
                 // Special tuning for non-poligonal primitives
-                ::glPolygonOffset(1.0f, 2.0f);
-                ::glEnable(GL_POLYGON_OFFSET_POINT);
-                ::glEnable(GL_POLYGON_OFFSET_FILL);
-                ::glEnable(GL_POLYGON_OFFSET_LINE);
+//                ::glPolygonOffset(1.0f, 2.0f);
+//                ::glEnable(GL_POLYGON_OFFSET_POINT);
+//                ::glEnable(GL_POLYGON_OFFSET_FILL);
+//                ::glEnable(GL_POLYGON_OFFSET_LINE);
 
                 // Clear buffer
                 ::glClearColor(_this->colBackground.r, _this->colBackground.g, _this->colBackground.b, _this->colBackground.a);
                 ::glClearDepth(1.0);
                 ::glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+                ::glMatrixMode(GL_MODELVIEW);
+                ::glLoadIdentity();
+                ::glBegin(GL_TRIANGLES);
+                    ::glColor3f(1.0f, 0.0f, 0.0f);
+                    ::glVertex3f(-0.5f, -0.5f, 0.0f);
+                    ::glColor3f(0.0f, 1.0f, 0.0f);
+                    ::glVertex3f(0.5f, -0.5f, 0.0f);
+                    ::glColor3f(0.0f, 0.0f, 1.0f);
+                    ::glVertex3f(0.0f, 0.5f, 0.0f);
+                ::glEnd();
 
                 // Setup drawing flag
                 _this->bDrawing     = true;
@@ -728,6 +776,14 @@ namespace lsp
                 ::glFinish();
                 ::glFlush();
 
+                // Process all window messages
+                MSG msg;
+                while (PeekMessageW(&msg, _this->hWindow, 0, 0, PM_REMOVE))
+                {
+                    TranslateMessage(&msg);
+                    DispatchMessageW(&msg);
+                }
+
                 return STATUS_OK;
             }
 
@@ -775,8 +831,7 @@ namespace lsp
                 if ((_this->hGL == NULL) || (!_this->bDrawing))
                     return STATUS_BAD_STATE;
 
-                ::glFinish();
-                ::glFlush();
+                sync(handle);
                 SwapBuffers(_this->hDC);
 
                 // Set active context

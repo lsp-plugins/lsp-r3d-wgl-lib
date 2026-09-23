@@ -358,11 +358,7 @@ namespace lsp
                     return STATUS_BAD_STATE;
 
                 // Set active context
-                if (!::wglMakeCurrent(_this->hDC, _this->hGL))
-                    lsp_error("wglMakeCurrent error");
-                else
-                    lsp_info("wglMakeCurrent OK");
-
+                wglMakeCurrent(_this->hDC, _this->hGL);
                 ::glViewport(0, 0, _this->viewWidth, _this->viewHeight);
                 ::glDrawBuffer(GL_BACK);
 

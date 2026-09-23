@@ -172,8 +172,6 @@ namespace lsp
                 R3D_WGL_BACKEND_EXP(set_lights);
                 R3D_WGL_BACKEND_EXP(draw_primitives);
 
-                debug::redirect("r3d-wgl.log");
-
                 #undef R3D_GLX_BACKEND_EXP
             }
 
@@ -224,6 +222,11 @@ namespace lsp
                 backend_t *_this = static_cast<backend_t *>(handle);
                 if (_this->hWindow != NULL)
                     return STATUS_BAD_STATE;
+
+                // Initialize parent structure
+                status_t res = r3d::base_backend_t::init(handle);
+                if (res != STATUS_OK)
+                    return res;
 
                 if (_this->pWndClass == NULL)
                 {
@@ -298,7 +301,7 @@ namespace lsp
                     return STATUS_UNKNOWN_ERR;
                 }
 
-                ShowWindow(_this->hWindow, SW_SHOWNORMAL);
+                // ShowWindow(_this->hWindow, SW_SHOWNORMAL);
 
                 return STATUS_OK;
             }
@@ -360,15 +363,12 @@ namespace lsp
                 else
                     lsp_info("wglMakeCurrent OK");
 
-                lsp_trace("glViewport: left=%d, top=%d, width=%d, height=%d",
-                        int(0), int(0), int(_this->viewWidth), int(_this->viewHeight));
-
                 ::glViewport(0, 0, _this->viewWidth, _this->viewHeight);
                 ::glDrawBuffer(GL_BACK);
 
                 // Enable depth test and culling
                 ::glDepthFunc(GL_LEQUAL);
-//                ::glEnable(GL_DEPTH_TEST);
+                ::glEnable(GL_DEPTH_TEST);
                 ::glEnable(GL_CULL_FACE);
                 ::glCullFace(GL_BACK);
                 ::glEnable(GL_COLOR_MATERIAL);
@@ -378,10 +378,10 @@ namespace lsp
                 ::glEnable(GL_RESCALE_NORMAL);
 
                 // Special tuning for non-poligonal primitives
-//                ::glPolygonOffset(1.0f, 2.0f);
-//                ::glEnable(GL_POLYGON_OFFSET_POINT);
-//                ::glEnable(GL_POLYGON_OFFSET_FILL);
-//                ::glEnable(GL_POLYGON_OFFSET_LINE);
+                ::glPolygonOffset(1.0f, 2.0f);
+                ::glEnable(GL_POLYGON_OFFSET_POINT);
+                ::glEnable(GL_POLYGON_OFFSET_FILL);
+                ::glEnable(GL_POLYGON_OFFSET_LINE);
 
                 // Clear buffer
                 ::glClearColor(_this->colBackground.r, _this->colBackground.g, _this->colBackground.b, _this->colBackground.a);
@@ -390,14 +390,8 @@ namespace lsp
 
                 ::glMatrixMode(GL_MODELVIEW);
                 ::glLoadIdentity();
-                ::glBegin(GL_TRIANGLES);
-                    ::glColor3f(1.0f, 0.0f, 0.0f);
-                    ::glVertex3f(-0.5f, -0.5f, 0.0f);
-                    ::glColor3f(0.0f, 1.0f, 0.0f);
-                    ::glVertex3f(0.5f, -0.5f, 0.0f);
-                    ::glColor3f(0.0f, 0.0f, 1.0f);
-                    ::glVertex3f(0.0f, 0.5f, 0.0f);
-                ::glEnd();
+                ::glMatrixMode(GL_PROJECTION);
+                ::glLoadIdentity();
 
                 // Setup drawing flag
                 _this->bDrawing     = true;
@@ -640,7 +634,7 @@ namespace lsp
 
                     // Draw the buffer
                     if (buffer->type != r3d::PRIMITIVE_WIREFRAME_TRIANGLES)
-                        ::glDrawArrays(mode, 0, count);
+                        ::glDrawArrays(mode, 0, to_do);
                     else
                     {
                         for (size_t i=0; i<count; i += 3)
@@ -674,7 +668,6 @@ namespace lsp
 
                 //-------------------------------------------------------------
                 // Select the drawing mode
-
                 // Check primitive type to draw
                 GLenum mode  = GL_TRIANGLES;
                 size_t count = buffer->count;
